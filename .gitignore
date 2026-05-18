@@ -31,7 +31,12 @@ Thumbs.db
 
 # Environment
 .env
-.env.local
+.env.*
+
+# Secrets
+*secrets*
+firebase-adminsdk.json
+backend/firebase-adminsdk.json
 
 # Database
 *.db

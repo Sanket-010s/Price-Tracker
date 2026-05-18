@@ -17,7 +17,8 @@ class Product(Base):
     __tablename__ = "products"
     
     id = Column(Integer, primary_key=True, index=True)
-    url = Column(String, unique=True, nullable=False, index=True)
+    user_id = Column(String, nullable=False, index=True, default="default_user")
+    url = Column(String, nullable=False)
     name = Column(String, nullable=False)
     current_price = Column(Float, nullable=True)
     currency = Column(String, default="USD")
@@ -48,6 +49,8 @@ class Alert(Base):
     alert_type = Column(SQLEnum(AlertType), nullable=False)
     target_price = Column(Float, nullable=True)
     percentage_drop = Column(Float, nullable=True)
+    send_email = Column(Boolean, default=True, nullable=False)
+    send_discord = Column(Boolean, default=False, nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     

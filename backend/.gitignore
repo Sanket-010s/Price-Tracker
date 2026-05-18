@@ -14,7 +14,10 @@ build/
 .coverage
 htmlcov/
 .env
+.env.*
 data/tracker.db
 data/logs/*.log
 *.log
 .DS_Store
+firebase-adminsdk.json
+firebase-adminsdk/.*log

@@ -1,5 +1,5 @@
 import { TrendingDown, TrendingUp, ExternalLink } from 'lucide-react';
-import { formatPrice } from '../utils/formatters';
+import { formatPrice, formatRelativeTime } from '../utils/formatters';
 
 const ProductCard = ({ product, onView, onDelete }) => {
   return (
@@ -20,7 +20,7 @@ const ProductCard = ({ product, onView, onDelete }) => {
             )}
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Last checked: {product.last_checked ? new Date(product.last_checked).toLocaleString() : 'Never'}
+            Last checked: {formatRelativeTime(product.last_checked)}
           </p>
         </div>
         {product.image_url && (

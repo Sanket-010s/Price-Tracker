@@ -13,7 +13,9 @@ const Alerts = () => {
     product_id: '',
     alert_type: 'absolute',
     target_price: '',
-    percentage_drop: ''
+    percentage_drop: '',
+    send_email: true,
+    send_discord: false
   });
 
   useEffect(() => {
@@ -38,12 +40,29 @@ const Alerts = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createAlert(formData);
+      const payload = { ...formData };
+      
+      // Convert string values to appropriate numbers for FastAPI/Pydantic
+      payload.product_id = parseInt(payload.product_id, 10);
+      
+      if (payload.target_price) {
+        payload.target_price = parseFloat(payload.target_price);
+      } else {
+        payload.target_price = null; // Send null instead of empty string
+      }
+      
+      if (payload.percentage_drop) {
+        payload.percentage_drop = parseFloat(payload.percentage_drop);
+      } else {
+        payload.percentage_drop = null; // Send null instead of empty string
+      }
+
+      await createAlert(payload);
       setShowForm(false);
-      setFormData({ product_id: '', alert_type: 'absolute', target_price: '', percentage_drop: '' });
+      setFormData({ product_id: '', alert_type: 'absolute', target_price: '', percentage_drop: '', send_email: true, send_discord: false });
       fetchData();
     } catch (err) {
-      alert('Failed to create alert');
+      alert('Failed to create alert. Check if you filled out the correct fields!');
     }
   };
 
@@ -125,6 +144,29 @@ const Alerts = () => {
                   />
                 </div>
               )}
+              
+              {/* Notification Channels */}
+              <div className="flex gap-6 py-2">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.send_email}
+                    onChange={(e) => setFormData({ ...formData, send_email: e.target.checked })}
+                    className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  Email Notification
+                </label>
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.send_discord}
+                    onChange={(e) => setFormData({ ...formData, send_discord: e.target.checked })}
+                    className="w-4 h-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  Discord Notification
+                </label>
+              </div>
+
               <div className="flex gap-2">
                 <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                   Create Alert
@@ -148,7 +190,15 @@ const Alerts = () => {
               <div key={alert.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{product?.name || 'Unknown Product'}</h3>
-                  <AlertBadge alert={alert} />
+                  <div className="flex items-center gap-2">
+                    <AlertBadge alert={alert} />
+                    <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${alert.send_email ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-600'}`}>
+                      Email
+                    </span>
+                    <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${alert.send_discord ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-600'}`}>
+                      Discord
+                    </span>
+                  </div>
                 </div>
                 <button
                   onClick={() => handleDelete(alert.id)}

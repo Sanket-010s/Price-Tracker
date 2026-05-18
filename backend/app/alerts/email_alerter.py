@@ -17,7 +17,7 @@ class EmailAlerter(BaseAlerter):
         self.smtp_from = settings.smtp_from
         self.enabled = settings.email_enabled
     
-    async def send_alert(self, message: str, metadata: Dict[str, Any] = None) -> bool:
+    async def send_alert(self, message: str, metadata: Dict[str, Any] = None, to_email: str = None) -> bool:
         if not self.enabled or not self.smtp_user:
             logger.warning("Email alerter is disabled or not configured")
             return False
@@ -27,7 +27,8 @@ class EmailAlerter(BaseAlerter):
             msg = MIMEMultipart('alternative')
             msg['Subject'] = metadata.get('subject', 'Price Alert')
             msg['From'] = self.smtp_from
-            msg['To'] = self.smtp_user  # Send to self for now
+            msg['To'] = to_email if to_email else self.smtp_user  # Send to user, fallback to self
+
             
             # Plain text version
             text_part = MIMEText(message, 'plain')

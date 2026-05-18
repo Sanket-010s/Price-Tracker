@@ -44,7 +44,7 @@ Price Tracker & Alerter is a comprehensive solution for monitoring product price
 - 📊 **Data-Driven**: Make informed purchase decisions with historical price data
 - 🔔 **Stay Informed**: Get instant notifications through multiple channels
 - 🤖 **Automated**: Set it and forget it - the system monitors prices 24/7
-- 🔒 **Self-Hosted**: Your data stays with you, complete privacy
+- 🔒 **Private & Secure**: Multi-user support with Firebase Authentication so everyone gets their own personal tracker
 
 ---
 
@@ -77,6 +77,7 @@ Price Tracker & Alerter is a comprehensive solution for monitoring product price
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
 - **Dark Mode**: Easy on the eyes with full dark mode support
 - **Real-Time Updates**: Instant feedback on price checks
+- **Multi-Tenant System**: Secure Login/Signup powered by Firebase Authentication
 - **Intuitive UI**: Clean, modern interface built with Tailwind CSS
 
 ### 🛠️ Developer-Friendly
@@ -96,6 +97,7 @@ Price Tracker & Alerter is a comprehensive solution for monitoring product price
 | **Python 3.10+** | Core language |
 | **FastAPI** | High-performance web framework |
 | **SQLAlchemy** | ORM for database operations |
+| **Firebase Admin** | User authentication & Token verification |
 | **Alembic** | Database migrations |
 | **APScheduler** | Background job scheduling |
 | **BeautifulSoup4** | HTML parsing |
@@ -111,6 +113,7 @@ Price Tracker & Alerter is a comprehensive solution for monitoring product price
 | **React 18** | UI library |
 | **Vite** | Build tool & dev server |
 | **Tailwind CSS** | Utility-first CSS framework |
+| **Firebase** | User authentication & Session management |
 | **Recharts** | Data visualization |
 | **Axios** | HTTP client |
 | **React Router** | Client-side routing |
@@ -259,6 +262,10 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env with your settings
 
+# Add Firebase Admin SDK (Required for Authentication)
+# Download from Firebase Console -> Service Accounts -> Generate new private key
+# Save it as backend/firebase-adminsdk.json
+
 # Initialize database
 python scripts/init_db.py
 
@@ -301,6 +308,9 @@ Edit `backend/.env` to configure the application:
 ```env
 # Database
 DATABASE_URL=sqlite:///./data/tracker.db
+
+# Authentication
+FIREBASE_CREDENTIALS_PATH=./firebase-adminsdk.json
 
 # Scraper Settings
 SCRAPER_TIMEOUT=30
@@ -494,14 +504,26 @@ gunicorn app.main:app \
   --bind 0.0.0.0:8000
 ```
 
+### Render Deployment
+
+When deploying your FastAPI Backend to Render, you must configure the following settings in your Web Service:
+
+1. **Root Directory**: Set this to `backend`
+2. **Environment Variables**: Add a new variable `PYTHON_VERSION` with the value `3.11.6` (Render defaults to 3.7 which is incompatible).
+3. **Build Command**: Set this to `pip install -r requirements.txt && playwright install chromium --with-deps` (Required to install Playwright browser binaries).
+4. **Start Command**: Set this to `python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+
 ### Frontend (Production)
 
 ```bash
+# Install Firebase and other dependencies
+npm install
+
 # Build for production
 npm run build
 
 # The dist/ folder contains static files
-# Serve with nginx, Apache, or any static file server
+# Serve with nginx, Apache, Vercel, or any static file server
 ```
 
 ### Docker (Coming Soon)

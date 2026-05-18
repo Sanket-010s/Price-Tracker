@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, RefreshCw } from 'lucide-react';
 import { usePriceHistory } from '../hooks/usePriceHistory';
 import PriceChart from '../components/PriceChart';
-import { formatPrice } from '../utils/formatters';
+import { formatPrice, formatRelativeTime } from '../utils/formatters';
 import { checkProductPrice } from '../services/products';
 import { useState } from 'react';
 
@@ -52,7 +52,7 @@ const ProductDetail = () => {
                 </span>
               </div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                Last checked: {product.last_checked ? new Date(product.last_checked).toLocaleString() : 'Never'}
+                Last checked: {formatRelativeTime(product.last_checked)}
               </p>
               <div className="flex gap-2">
                 <button

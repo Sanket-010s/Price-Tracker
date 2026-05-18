@@ -7,6 +7,8 @@ class AlertBase(BaseModel):
     alert_type: AlertType
     target_price: Optional[float] = None
     percentage_drop: Optional[float] = None
+    send_email: bool = True
+    send_discord: bool = False
 
 class AlertCreate(AlertBase):
     product_id: int

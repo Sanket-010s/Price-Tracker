@@ -1,7 +1,7 @@
 import api from './api';
 
 export const getProducts = async (activeOnly = false) => {
-  const response = await api.get('/products', { params: { active_only: activeOnly } });
+  const response = await api.get('/products/', { params: { active_only: activeOnly } });
   return response.data;
 };
 
@@ -11,7 +11,7 @@ export const getProduct = async (id, days = 30) => {
 };
 
 export const createProduct = async (productData) => {
-  const response = await api.post('/products', productData);
+  const response = await api.post('/products/', productData);
   return response.data;
 };
 
